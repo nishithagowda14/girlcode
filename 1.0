@@ -1,0 +1,53 @@
+---
+- name: Ansible with one module
+  hosts: local
+  gather_facts: no
+
+  tasks:
+    - name: Welcome friends
+      firstmod:
+        name: "Ansible"
+      register: result
+
+    - name: Show message
+      debug:
+        msg: "{{ result.message }}"
+
+
+#!/usr/bin/python
+
+from ansible.module_utils.basic import AnsibleModule
+
+
+def walk():
+    module_args = dict(
+        name=dict(type='str', required=True)
+    )
+
+    module = AnsibleModule(argument_spec=module_args)
+
+    result = dict(
+        changed=False,
+        message=f"Welcome, {module.params['name']}"
+    )
+
+    module.exit_json(**result)
+
+
+if __name__ == "__main__":
+    walk()
+
+
+
+
+---
+- name: My first Playbook
+  hosts: local
+  connection: local
+
+  tasks:
+    - name: Walk for 2 kms
+      debug:
+        msg: "Ansible is a config mgmt tool"
+
+
